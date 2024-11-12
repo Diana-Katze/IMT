@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Генератор випадкових чисел</title>
+    <style>
+        /* Загальні стилі */
+        body {
+            background-color: #F8F5E1;
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .container {
+            text-align: center;
+            padding: 40px;
+            border-radius: 40px;
+            background: #fff;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #3C2A1E;
+            font-size: 40px;
+            margin-bottom: 20px;
+        }
+
+        #randomNumberDisplay {
+            font-size: 80px;
+            color: #3C2A1E;
+            font-weight: bold;
+            margin-top: 40px;
+            letter-spacing: 2px;
+            opacity: 0;
+            transform: scale(0.5);
+            animation: fadeInUp 0.5s forwards;
+        }
+
+        /* Анімація для числа */
+        @keyframes fadeInUp {
+            0% {
+                opacity: 0;
+                transform: scale(0.5);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* Кнопка */
+        button {
+            background-color: #3C2A1E; /* Темно-коричневий */
+            color: white;
+            font-size: 22px;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 15px;
+            cursor: pointer;
+            margin-top: 30px;
+            transition: all 0.3s ease;
+            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        button:hover {
+            background-color: #5A3D28; /* Світліший коричневий при наведенні */
+            box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.3);
+            transform: translateY(-3px);
+        }
+
+        /* Інпут для введення меж */
+        input[type="number"] {
+            padding: 10px;
+            margin: 10px;
+            font-size: 18px;
+            border: 2px solid #7C6A4B;
+            border-radius: 8px;
+            width: 100px;
+        }
+
+        /* Опис меж */
+        .range-description {
+            font-size: 18px;
+            margin-top: 10px;
+            color: #3C2A1E;
+        }
+
+        .history {
+            margin-top: 40px;
+            text-align: left;
+            font-size: 18px;
+            color: #3C2A1E;
+            max-height: 200px;
+            overflow-y: auto;
+            padding-right: 10px;
+            border-right: 3px solid #7C6A4B;
+            height: 200px;
+            width: 100%;
+        }
+
+        .footer {
+            font-size: 14px;
+            color: #3C2A1E;
+            position: absolute;
+            bottom: 20px;
+            text-align: center;
+            width: 100%;
+        }
+
+        .footer a {
+            color: #7C6A4B;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .footer a:hover {
+            color: #9A7F5F;
+        }
+
+        /* Кнопка для очищення історії */
+        #clearHistoryButton {
+            background-color: #3C2A1E; /* Темно-коричневий */
+            margin-top: 20px;
+            font-size: 20px;
+            color: white;
+            border-radius: 10px;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+        }
+
+        #clearHistoryButton:hover {
+            background-color: #5A3D28; /* Світліший коричневий при наведенні */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Генератор випадкових чисел</h1>
+
+        <label for="minValue">Мінімум:</label>
+        <input type="number" id="minValue" value="1" min="1">
+        
+        <label for="maxValue">Максимум:</label>
+        <input type="number" id="maxValue" value="10000" min="1">
+
+        <div class="range-description">
+            Поточні межі: <span id="currentRange">1 - 10000</span>
+        </div>
+
+        <button id="generateButton">Згенерувати число</button>
+        <div id="randomNumberDisplay"></div>
+
+        <div class="history">
+            <h3>Історія згенерованих чисел:</h3>
+            <ul id="historyList"></ul>
+        </div>
+
+        <button id="clearHistoryButton">Очистити історію</button>
+    </div>
+
+
+    <script>
+        // Масив для зберігання історії згенерованих чисел
+        let history = [];
+
+        // Функція для генерації випадкового числа
+        function generateRandomNumber(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        // Оновлення на екран
+        function updateRandomNumberDisplay(randomNumber) {
+            const randomNumberDisplay = document.getElementById("randomNumberDisplay");
+            randomNumberDisplay.textContent = randomNumber;
+
+            // Анімація числа
+            randomNumberDisplay.style.opacity = 0;
+            randomNumberDisplay.style.transform = 'scale(0.5)';
+            setTimeout(() => {
+                randomNumberDisplay.style.transition = 'all 0.5s ease';
+                randomNumberDisplay.style.opacity = 1;
+                randomNumberDisplay.style.transform = 'scale(1)';
+            }, 10);
+        }
+
+        // Оновлення історії на екрані
+        function updateHistory(randomNumber) {
+            // Додаємо нове число в історію
+            history.push(randomNumber);
+
+            // Оновлюємо список історії на екрані
+            const historyList = document.getElementById("historyList");
+            const listItem = document.createElement("li");
+            listItem.textContent = randomNumber;
+            historyList.appendChild(listItem);
+        }
+
+        // Оновлення меж
+        function updateRangeDisplay(min, max) {
+            document.getElementById("currentRange").textContent = `${min} - ${max}`;
+        }
+
+        // Обробка натискання кнопки
+        document.getElementById("generateButton").addEventListener("click", () => {
+            const minValue = parseInt(document.getElementById("minValue").value);
+            const maxValue = parseInt(document.getElementById("maxValue").value);
+
+            // Оновлюємо поточні межі
+            updateRangeDisplay(minValue, maxValue);
+
+            // Перевірка, щоб максимальне значення було більшим за мінімальне
+            if (minValue >= maxValue) {
+                alert("Максимум повинен бути більше мінімуму.");
+                return;
+            }
+
+            const randomNumber = generateRandomNumber(minValue, maxValue);
+            updateRandomNumberDisplay(randomNumber);
+            updateHistory(randomNumber);
+        });
+
+        // Очищення історії
+        document.getElementById("clearHistoryButton").addEventListener("click", () => {
+            history = [];  // Очищуємо масив історії
+            const historyList = document.getElementById("historyList");
+            historyList.innerHTML = '';  // Очищаємо список на екрані
+        });
+    </script>
+</body>
+</html>
