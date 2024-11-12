@@ -3,238 +3,240 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Генератор випадкових чисел</title>
+    <title>Калькулятор ІМТ</title>
     <style>
-        /* Загальні стилі */
         body {
-            background-color: #F8F5E1;
-            font-family: 'Arial', sans-serif;
+            font-family: Arial, sans-serif;
+            background-color: #F5F5DC;
+            color: #4E342E;
             display: flex;
-            justify-content: center;
             align-items: center;
+            justify-content: center;
             height: 100vh;
             margin: 0;
-            flex-direction: column;
-            overflow: hidden;
         }
-
         .container {
-            text-align: center;
-            padding: 40px;
-            border-radius: 40px;
-            background: #fff;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            max-width: 1200px;
-            width: 100%;
-        }
-
-        h1 {
-            color: #3C2A1E;
-            font-size: 40px;
-            margin-bottom: 20px;
-        }
-
-        #randomNumberDisplay {
-            font-size: 80px;
-            color: #3C2A1E;
-            font-weight: bold;
-            margin-top: 40px;
-            letter-spacing: 2px;
-            opacity: 0;
-            transform: scale(0.5);
-            animation: fadeInUp 0.5s forwards;
-        }
-
-        /* Анімація для числа */
-        @keyframes fadeInUp {
-            0% {
-                opacity: 0;
-                transform: scale(0.5);
-            }
-            100% {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-
-        /* Кнопка */
-        button {
-            background-color: #3C2A1E; /* Темно-коричневий */
-            color: white;
-            font-size: 22px;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 15px;
-            cursor: pointer;
-            margin-top: 30px;
-            transition: all 0.3s ease;
-            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        button:hover {
-            background-color: #5A3D28; /* Світліший коричневий при наведенні */
-            box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.3);
-            transform: translateY(-3px);
-        }
-
-        /* Інпут для введення меж */
-        input[type="number"] {
-            padding: 10px;
-            margin: 10px;
-            font-size: 18px;
-            border: 2px solid #7C6A4B;
+            background-color: #FFFFFF;
+            padding: 20px;
             border-radius: 8px;
-            width: 100px;
-        }
-
-        /* Опис меж */
-        .range-description {
-            font-size: 18px;
-            margin-top: 10px;
-            color: #3C2A1E;
-        }
-
-        .history {
-            margin-top: 40px;
-            text-align: left;
-            font-size: 18px;
-            color: #3C2A1E;
-            max-height: 200px;
-            overflow-y: auto;
-            padding-right: 10px;
-            border-right: 3px solid #7C6A4B;
-            height: 200px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            max-width: 400px;
             width: 100%;
         }
-
-        .footer {
-            font-size: 14px;
-            color: #3C2A1E;
-            position: absolute;
-            bottom: 20px;
+        h1 {
             text-align: center;
+            color: #4E342E;
+        }
+        label {
+            font-size: 16px;
+            display: block;
+            margin-top: 10px;
+        }
+        input[type="number"] {
             width: 100%;
-        }
-
-        .footer a {
-            color: #7C6A4B;
-            text-decoration: none;
-            font-weight: bold;
-        }
-
-        .footer a:hover {
-            color: #9A7F5F;
-        }
-
-        /* Кнопка для очищення історії */
-        #clearHistoryButton {
-            background-color: #3C2A1E; /* Темно-коричневий */
-            margin-top: 20px;
-            font-size: 20px;
-            color: white;
-            border-radius: 10px;
-            padding: 10px 20px;
+            padding: 10px;
+            margin-top: 5px;
+            font-size: 16px;
+            color: #4E342E;
+            background-color: #E0E0E0;
             border: none;
-            cursor: pointer;
+            border-radius: 4px;
+            box-sizing: border-box;
         }
-
-        #clearHistoryButton:hover {
-            background-color: #5A3D28; /* Світліший коричневий при наведенні */
+        button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 15px;
+            font-size: 16px;
+            color: white;
+            background-color: #A0522D;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: transform 0.2s, background-color 0.3s;
+        }
+        button:hover {
+            background-color: #8B4513;
+            transform: scale(1.05);
+        }
+        .result {
+            margin-top: 20px;
+            font-size: 18px;
+            text-align: center;
+        }
+        .history {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #4E342E;
+            max-height: 150px;
+            overflow-y: auto;
+            padding: 10px;
+            border: 1px solid #E0E0E0;
+            border-radius: 4px;
+            background-color: #FAFAFA;
+        }
+        .history-item {
+            margin-bottom: 10px;
+            border-bottom: 1px solid #E0E0E0;
+            padding-bottom: 5px;
+        }
+        /* вікно */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            width: 300px;
+            text-align: center;
+        }
+        .modal button {
+            margin-top: 10px;
+            width: 100%;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Генератор випадкових чисел</h1>
 
-        <label for="minValue">Мінімум:</label>
-        <input type="number" id="minValue" value="1" min="1">
-        
-        <label for="maxValue">Максимум:</label>
-        <input type="number" id="maxValue" value="10000" min="1">
+<div class="container">
+    <h1>Калькулятор ІМТ</h1>
 
-        <div class="range-description">
-            Поточні межі: <span id="currentRange">1 - 10000</span>
-        </div>
-
-        <button id="generateButton">Згенерувати число</button>
-        <div id="randomNumberDisplay"></div>
-
-        <div class="history">
-            <h3>Історія згенерованих чисел:</h3>
-            <ul id="historyList"></ul>
-        </div>
-
-        <button id="clearHistoryButton">Очистити історію</button>
+    <!-- Вибір статі -->
+    <label for="gender">Стать:</label>
+    <div>
+        <input type="radio" id="male" name="gender" value="male" checked> Чоловік
+        <input type="radio" id="female" name="gender" value="female"> Жінка
     </div>
 
+    <label for="weight">Вага (кг):</label>
+    <input type="number" id="weight" placeholder="Введіть вашу вагу" min="0" step="0.1">
 
-    <script>
-        // Масив для зберігання історії згенерованих чисел
-        let history = [];
+    <label for="height">Зріст (см):</label>
+    <input type="number" id="height" placeholder="Введіть ваш зріст" min="0" step="0.1">
 
-        // Функція для генерації випадкового числа
-        function generateRandomNumber(min, max) {
-            return Math.floor(Math.random() * (max - min + 1)) + min;
+    <button onclick="calculateBMI()">Обчислити ІМТ</button>
+
+    <div id="result" class="result">Ваш ІМТ буде відображено тут</div>
+
+    <div class="history">
+        <strong>Історія обчислень:</strong>
+        <div id="history"></div>
+    </div>
+
+    <button onclick="clearHistory()">Очистити історію</button>
+</div>
+
+<!--Модальне вікно для консультації-->
+<div id="consultationModal" class="modal">
+    <div class="modal-content">
+        <h2>Бажаєте отримати консультацію?</h2>
+        <p>Ми можемо порекомендувати клініку або поділитися важливою інформацією.</p>
+        <button onclick="showConsultationLinks()">Так</button>
+        <button onclick="closeModal()">Ні</button>
+    </div>
+</div>
+
+<script>
+    function calculateBMI() {
+        const weight = parseFloat(document.getElementById("weight").value);
+        const height = parseFloat(document.getElementById("height").value) / 100;
+        
+        // отримання статті
+        const gender = document.querySelector('input[name="gender"]:checked').value;
+
+        if (isNaN(weight) || isNaN(height) || height === 0) {
+            alert("Будь ласка, введіть коректні значення для ваги та зросту.");
+            return;
         }
 
-        // Оновлення на екран
-        function updateRandomNumberDisplay(randomNumber) {
-            const randomNumberDisplay = document.getElementById("randomNumberDisplay");
-            randomNumberDisplay.textContent = randomNumber;
+        // Формула для обчислення ІМТ (однакова для обох статей)
+        const bmi = weight / (height * height);
 
-            // Анімація числа
-            randomNumberDisplay.style.opacity = 0;
-            randomNumberDisplay.style.transform = 'scale(0.5)';
-            setTimeout(() => {
-                randomNumberDisplay.style.transition = 'all 0.5s ease';
-                randomNumberDisplay.style.opacity = 1;
-                randomNumberDisplay.style.transform = 'scale(1)';
-            }, 10);
-        }
+        let category;
 
-        // Оновлення історії на екрані
-        function updateHistory(randomNumber) {
-            // Додаємо нове число в історію
-            history.push(randomNumber);
-
-            // Оновлюємо список історії на екрані
-            const historyList = document.getElementById("historyList");
-            const listItem = document.createElement("li");
-            listItem.textContent = randomNumber;
-            historyList.appendChild(listItem);
-        }
-
-        // Оновлення меж
-        function updateRangeDisplay(min, max) {
-            document.getElementById("currentRange").textContent = `${min} - ${max}`;
-        }
-
-        // Обробка натискання кнопки
-        document.getElementById("generateButton").addEventListener("click", () => {
-            const minValue = parseInt(document.getElementById("minValue").value);
-            const maxValue = parseInt(document.getElementById("maxValue").value);
-
-            // Оновлюємо поточні межі
-            updateRangeDisplay(minValue, maxValue);
-
-            // Перевірка, щоб максимальне значення було більшим за мінімальне
-            if (minValue >= maxValue) {
-                alert("Максимум повинен бути більше мінімуму.");
-                return;
+        // Інтерпретація для статі (спрощено)
+        if (gender === "male") {
+            if (bmi < 18.5) {
+                category = "Низька вага";
+            } else if (bmi < 24.9) {
+                category = "Норма";
+            } else if (bmi < 29.9) {
+                category = "Надлишкова вага";
+            } else {
+                category = "Ожиріння";
             }
+        } else {
+            if (bmi < 18.5) {
+                category = "Низька вага";
+            } else if (bmi < 23.9) {  // поріг для жінок
+                category = "Норма";
+            } else if (bmi < 29.9) {
+                category = "Надлишкова вага";
+            } else {
+                category = "Ожиріння";
+            }
+        }
 
-            const randomNumber = generateRandomNumber(minValue, maxValue);
-            updateRandomNumberDisplay(randomNumber);
-            updateHistory(randomNumber);
-        });
+        const resultText = `Ваш ІМТ: ${bmi.toFixed(2)} (${category})`;
+        document.getElementById("result").textContent = resultText;
 
-        // Очищення історії
-        document.getElementById("clearHistoryButton").addEventListener("click", () => {
-            history = [];  // Очищуємо масив історії
-            const historyList = document.getElementById("historyList");
-            historyList.innerHTML = '';  // Очищаємо список на екрані
-        });
-    </script>
+        // додати історію
+        const historyItem = document.createElement("div");
+        historyItem.className = "history-item";
+        historyItem.textContent = resultText;
+        document.getElementById("history").prepend(historyItem);
+
+        // виведення вікна коли показники  "Низька вага" or "Надлишкова вага"
+        if (category === "Низька вага" || category === "Надлишкова вага") {
+            document.getElementById("consultationModal").style.display = "flex";
+        }   
+        if (category === "Ожиріння" || category === "Ожиріння") {
+            document.getElementById("consultationModal").style.display = "flex";
+        }   
+
+
+    }
+
+
+
+    function clearHistory() {
+        const historyDiv = document.getElementById("history");
+        historyDiv.innerHTML = ''; // очистити історію
+    }
+
+    function closeModal() {
+        //закриття вікна коли ні
+        document.getElementById("consultationModal").style.display = "none";
+    }
+
+    function showConsultationLinks() {
+        // закрити вікно
+        closeModal();
+        
+        // посилання
+        const consultationContent = `
+            <h3>Консультації та допомога:</h3>
+            <ul>
+                <li><a href="https://svit-zdorovia.com.ua/" target="_blank">Світ здоров'я</a></li>
+                <li><a href="https://impuls24.com.ua/uk/ozhyrinnya-i-zajva-vaga/" target="_blank">Надмірна вага</a></li>
+                <li><a href="https://blog.h24.ua/uk/yak-nabraty-vagu/" target="_blank">Мала вага</a></li>
+            </ul>
+        `;
+        
+        const resultDiv = document.getElementById("result");
+        resultDiv.innerHTML += consultationContent; // Додавання посилань до результату
+    }
+</script>
+
 </body>
 </html>
